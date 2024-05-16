@@ -23,6 +23,11 @@ string connectionString = builder.Configuration.GetConnectionString("MySql");
 builder.Services.AddTransient<RepositoryPersonajes>();
 builder.Services.AddDbContext<PersonajesContext>(options => options.UseMySql(connectionString,ServerVersion.AutoDetect(connectionString)));
 
+builder.Services.AddCors(p => p.AddPolicy("corsenabled", options =>
+{
+    options.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+}));
+
 var app = builder.Build();
 
 app.UseSwagger();
@@ -38,7 +43,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors("corsenabled");
 app.UseAuthorization();
 
 app.MapControllers();
